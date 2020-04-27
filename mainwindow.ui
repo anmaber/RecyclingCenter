@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>738</width>
-    <height>381</height>
+    <width>716</width>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,22 +17,22 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>80</y>
-      <width>160</width>
-      <height>191</height>
+      <x>10</x>
+      <y>10</y>
+      <width>171</width>
+      <height>271</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButtonWyloguj">
        <property name="text">
         <string>Wyloguj</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QPushButton" name="pushButtonPokaAll">
        <property name="text">
         <string>Pokaż wszystkie</string>
        </property>
@@ -40,34 +40,37 @@
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="1" column="1">
+        <widget class="QTextEdit" name="textEditSzukaj"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="labelSzukaj">
          <property name="text">
           <string>Szukaj:</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
         </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QTextEdit" name="textEdit"/>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="pushButtonDodaj">
        <property name="text">
         <string>Dodaj</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButtonEdytuj">
        <property name="text">
         <string>Edutuj</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="pushButtonUsun">
        <property name="text">
         <string>Usuń</string>
        </property>
@@ -79,63 +82,85 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>40</y>
+      <y>10</y>
       <width>521</width>
       <height>271</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>0</number>
     </property>
-    <widget class="QWidget" name="tab_1">
+    <widget class="QWidget" name="tabSmieciarka">
      <attribute name="title">
-      <string>Śmieciarki</string>
+      <string>Śmieciarka</string>
+     </attribute>
+     <widget class="QTableView" name="tableView">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>451</width>
+        <height>211</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabOdpad">
+     <attribute name="title">
+      <string>Odpad</string>
+     </attribute>
+     <widget class="QTableView" name="tableView_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>381</width>
+        <height>192</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabMaterial">
+     <attribute name="title">
+      <string>Materiał</string>
+     </attribute>
+     <widget class="QTableView" name="tableView_3">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>256</width>
+        <height>192</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabFirma">
+     <attribute name="title">
+      <string>Firma</string>
+     </attribute>
+     <widget class="QTableView" name="tableView_4">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>441</width>
+        <height>192</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabKontener">
+     <attribute name="title">
+      <string>Kontener</string>
      </attribute>
     </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Odpady</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>Materiały</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Firmy</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>Kontenery</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_5">
+    <widget class="QWidget" name="tabSprzedaze">
      <attribute name="title">
       <string>Sprzedaże</string>
      </attribute>
     </widget>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>738</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

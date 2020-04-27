@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+//#include "database.hh"
 #include <QApplication>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
