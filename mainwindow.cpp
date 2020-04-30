@@ -106,13 +106,15 @@ QSqlTableModel *MainWindow::initModel(const char* TableName){
 
 
 //przy zmiane karty view przechowuje QTableView znajdujące sie na aktualnej karcie
-//model jest ustawiany na null żeby tablica nie wyświetlała sie odrazu
+//po podwójnym kliknięciu możne edytować komórke
+//przy kliknięciu zaznacza sie odrazu cały rząd
+//przytrzymując ctrl można zaznaczyc wiecej rzędów
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     view=dynamic_cast<QTableView*>(ui->tabWidget->widget(index));
-    view->setEditTriggers(QTableView::NoEditTriggers);
-
-    //view->setModel(nullptr);
+    view->setEditTriggers(QTableView::DoubleClicked);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 // po kliknięciu przycisku pojawia sie tabela w zależności od aktualnej karty
@@ -120,4 +122,25 @@ void MainWindow::on_pushButtonPokaAll_clicked()
 {
     QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     view->setModel(initModel(currentTabName.toStdString().c_str()));
+}
+
+
+//usuwanie
+void MainWindow::on_pushButtonUsun_clicked()
+{
+    if(view)
+    {
+        QItemSelectionModel *select = view->selectionModel();
+        if(select->hasSelection())
+        {
+            auto selected = select->selectedRows();
+            for(auto elem : selected)
+            {
+                view->model()->removeRow(elem.row());
+            }
+            //odświezenie zeby nie był pusty rzad, tez mi sie nie podoba ten dynamic_cast
+            auto modelToUpdate = dynamic_cast<QSqlTableModel*>(view->model());
+            modelToUpdate->select();
+        }
+    }
 }

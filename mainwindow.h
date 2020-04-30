@@ -25,6 +25,8 @@ private slots:
 
     void on_pushButtonPokaAll_clicked();
 
+    void on_pushButtonUsun_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
