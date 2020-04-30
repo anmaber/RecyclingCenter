@@ -30,7 +30,7 @@ private:
     QSqlDatabase db;
     void initDB(bool ItsAnia);
     QTableView * view;
-    QSqlTableModel *initModel(const QString &TableName); // reads Table from server
+    QSqlTableModel *initModel(const char* TableName); // reads Table from server
 
 };
 
