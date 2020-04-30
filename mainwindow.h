@@ -7,6 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QMessageBox>
+#include <QTableWidget>
 
 namespace Ui {
 class MainWindow;
@@ -19,11 +20,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+private slots:
+    void on_tabWidget_currentChanged(int index);
+
+    void on_pushButtonPokaAll_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     void initDB(bool ItsAnia);
-    QSqlTableModel *initModel(const char*TableName); // reads Table from server
+    QTableView * view;
+    QSqlTableModel *initModel(const QString &TableName); // reads Table from server
 
 };
 

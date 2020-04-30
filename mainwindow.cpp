@@ -8,15 +8,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //  Initialize Database
     if (QMessageBox::Yes == QMessageBox(QMessageBox::Question,
-                    "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
+                                        "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
     {
         this->initDB(true); // Ania's password
     } else {
         this->initDB(false); // Filip's password
     }
 
-    // Probne zczytanie Tabeli:
-    ui->tableView->setModel(initModel("Firma"));
+    ui->tabWidget->addTab(new QTableView(),"Smieciarka");
+    ui->tabWidget->addTab(new QTableView(),"Odpad");
+    ui->tabWidget->addTab(new QTableView(),"Material");
+    ui->tabWidget->addTab(new QTableView(),"Kontener");
+    ui->tabWidget->addTab(new QTableView(),"Firma");
+    ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
 }
 
 MainWindow::~MainWindow()
@@ -40,7 +44,7 @@ void MainWindow::initDB(bool ItsAnia) {
     }
 }
 
-QSqlTableModel *MainWindow::initModel(const char *TableName){
+QSqlTableModel *MainWindow::initModel(const QString & TableName){
     QSqlTableModel* model = new QSqlTableModel(this, db);
     model->setTable(TableName);
     //All changes to the model will be applied immediately to the database:
@@ -48,7 +52,22 @@ QSqlTableModel *MainWindow::initModel(const char *TableName){
     model->select(); // Reads data from Table
 
     // do ustawiania naglowkow kolumn(inaczej uzywa meh nazw z bazy)
-//    model->setHeaderData(0, Qt::Horizontal, "Item Name");
-//    model->setHeaderData(1, Qt::Horizontal, "Price");
+    //    model->setHeaderData(0, Qt::Horizontal, "Item Name");
+    //    model->setHeaderData(1, Qt::Horizontal, "Price");
     return model;
+}
+
+//przy zmiane karty view przechowuje QTableView znajdujące sie na aktualnej karcie
+//model jest ustawiany na null żeby tablica nie wyświetlała sie odrazu
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    view=dynamic_cast<QTableView*>(ui->tabWidget->widget(index));
+    view->setModel(nullptr);
+}
+
+// po kliknięciu przycisku pojawia sie tabela w zależności od aktualnej karty
+void MainWindow::on_pushButtonPokaAll_clicked()
+{
+    QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+    view->setModel(initModel(currentTabName));
 }

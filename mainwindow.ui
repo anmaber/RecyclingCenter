@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>716</width>
-    <height>315</height>
+    <width>728</width>
+    <height>305</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,83 +83,13 @@
      <rect>
       <x>190</x>
       <y>10</y>
-      <width>521</width>
-      <height>271</height>
+      <width>531</width>
+      <height>281</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>-1</number>
     </property>
-    <widget class="QWidget" name="tabSmieciarka">
-     <attribute name="title">
-      <string>Śmieciarka</string>
-     </attribute>
-     <widget class="QTableView" name="tableView">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>10</y>
-        <width>451</width>
-        <height>211</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabOdpad">
-     <attribute name="title">
-      <string>Odpad</string>
-     </attribute>
-     <widget class="QTableView" name="tableView_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>381</width>
-        <height>192</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabMaterial">
-     <attribute name="title">
-      <string>Materiał</string>
-     </attribute>
-     <widget class="QTableView" name="tableView_3">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>10</y>
-        <width>256</width>
-        <height>192</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabFirma">
-     <attribute name="title">
-      <string>Firma</string>
-     </attribute>
-     <widget class="QTableView" name="tableView_4">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>10</y>
-        <width>441</width>
-        <height>192</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabKontener">
-     <attribute name="title">
-      <string>Kontener</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tabSprzedaze">
-     <attribute name="title">
-      <string>Sprzedaże</string>
-     </attribute>
-    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
