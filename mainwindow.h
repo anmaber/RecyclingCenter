@@ -27,6 +27,8 @@ private slots:
 
     void on_pushButtonUsun_clicked();
 
+    void on_textEdit_textChanged();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;

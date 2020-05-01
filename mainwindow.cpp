@@ -58,14 +58,14 @@ QSqlTableModel *MainWindow::initModel(const char* TableName){
         qDebug() <<"wchodzi";
         model->setHeaderData(0, Qt::Horizontal, "Rejestracja");
         model->setHeaderData(1, Qt::Horizontal, "Waga");
-        model->setHeaderData(2, Qt::Horizontal, "Data odbioru");
+        model->setHeaderData(2, Qt::Horizontal, "Data-odbioru");
     }
     else if(strTn == "Odpad")
     {
         model->setHeaderData(0, Qt::Horizontal, "Id");
         model->setHeaderData(1, Qt::Horizontal, "Zgodnosc [%]");
         model->setHeaderData(2, Qt::Horizontal, "Smieciarka");
-        model->setHeaderData(3, Qt::Horizontal, "Rejestracja");
+        model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
     }
     else if(strTn == "Material")
@@ -143,4 +143,25 @@ void MainWindow::on_pushButtonUsun_clicked()
             modelToUpdate->select();
         }
     }
+}
+
+//szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
+void MainWindow::on_textEdit_textChanged()
+{
+
+    auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
+    int columns = modelToSearch->columnCount();
+    //filtrowanie jest po prostu zapytaniem WHERE z SQL
+    //modelToSearch->record().fieldName uzyskuje nazwe kolumny taka jaka jest w bazie
+    //cos typu "* = coś" nie zadziala, musimy znac nazwy kolumn i ich ilosc zeby przeszukac wszystkie
+    //zapytanie typu " koumna like 'cos%' " zapewnia nam wyszukiwanie zawartosći zaczynajacej sie na 'cos'
+    QString filter = modelToSearch->record().fieldName(0) + " like '" + ui->textEdit->toPlainText() + "%'";
+    for(int i = 1; i< columns ;++i)
+    {
+        filter+=" or ";
+        filter += modelToSearch->record().fieldName(i) + " like '" + ui->textEdit->toPlainText() + "%'";
+    }
+    modelToSearch->setFilter(filter);
+    qDebug()<<filter;
+
 }
