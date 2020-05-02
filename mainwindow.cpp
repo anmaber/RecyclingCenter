@@ -46,12 +46,15 @@ void MainWindow::initDB(bool ItsAnia) {
     }
 }
 
-QSqlTableModel *MainWindow::initModel(const char* TableName){
-    QSqlTableModel* model = new QSqlTableModel(this, db);
+QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
+    QSqlRelationalTableModel* model = new QSqlRelationalTableModel(this, db);
     model->setTable(TableName);
     //All changes to the model will be applied immediately to the database:
-//    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    model->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
+//    model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+
+    //Relations
+
     model->select(); // Reads data from Table
     std::string strTn = std::string(TableName);
 
@@ -135,7 +138,7 @@ void MainWindow::on_pushButtonUsun_clicked()
                 view->model()->removeRow(elem.row());
             }
             //odświezenie zeby nie był pusty rzad, tez mi sie nie podoba ten dynamic_cast
-            auto modelToUpdate = dynamic_cast<QSqlTableModel*>(view->model());
+            auto modelToUpdate = dynamic_cast<QSqlRelationalTableModel*>(view->model());
             modelToUpdate->select();
             /* Znalazłem, ogolnie info:
             Likewise, if you remove rows using removeRows(),
@@ -154,7 +157,7 @@ void MainWindow::on_pushButtonUsun_clicked()
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
 void MainWindow::on_textEdit_textChanged()
 {
-    auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
+    auto modelToSearch = dynamic_cast<QSqlRelationalTableModel*>(view->model());
     int columns = modelToSearch->columnCount();
     //filtrowanie jest po prostu zapytaniem WHERE z SQL
     //modelToSearch->record().fieldName uzyskuje nazwe kolumny taka jaka jest w bazie
@@ -177,7 +180,7 @@ void MainWindow::on_pushButtonDodaj_clicked()
     QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     std::string strTn = std::string(currentTabName.toStdString().c_str());
 
-    auto CurrentModel = dynamic_cast<QSqlTableModel*>(view->model());
+    auto CurrentModel = dynamic_cast<QSqlRelationalTableModel*>(view->model());
 
     QSqlRecord newRecord = CurrentModel->record();
 

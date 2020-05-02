@@ -36,7 +36,7 @@ private:
     QSqlDatabase db;
     void initDB(bool ItsAnia);
     QTableView * view;
-    QSqlTableModel *initModel(const char* TableName); // reads Table from server
+    QSqlRelationalTableModel *initModel(const char* TableName); // reads Table from server
 
 };
 
