@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <string>
+#include <QDate>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,13 +50,13 @@ QSqlTableModel *MainWindow::initModel(const char* TableName){
     QSqlTableModel* model = new QSqlTableModel(this, db);
     model->setTable(TableName);
     //All changes to the model will be applied immediately to the database:
+//    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->select(); // Reads data from Table
     std::string strTn = std::string(TableName);
-    qDebug() << strTn.c_str();
+
     if (strTn =="Smieciarka" )
     {
-        qDebug() <<"wchodzi";
         model->setHeaderData(0, Qt::Horizontal, "Rejestracja");
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Data-odbioru");
@@ -97,13 +98,8 @@ QSqlTableModel *MainWindow::initModel(const char* TableName){
         qDebug() << "wrong TableName";
     }
 
-    // do ustawiania naglowkow kolumn(inaczej uzywa meh nazw z bazy)
-    //    model->setHeaderData(0, Qt::Horizontal, "Item Name");
-    //    model->setHeaderData(1, Qt::Horizontal, "Price");
     return model;
 }
-
-
 
 //przy zmiane karty view przechowuje QTableView znajdujące sie na aktualnej karcie
 //po podwójnym kliknięciu możne edytować komórke
@@ -112,6 +108,7 @@ QSqlTableModel *MainWindow::initModel(const char* TableName){
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     view=dynamic_cast<QTableView*>(ui->tabWidget->widget(index));
+    // PRZY EDIT FK DOBRZE BY BYŁO DAĆ COMBO BOX I ERROR HANDLING
     view->setEditTriggers(QTableView::DoubleClicked);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -123,7 +120,6 @@ void MainWindow::on_pushButtonPokaAll_clicked()
     QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     view->setModel(initModel(currentTabName.toStdString().c_str()));
 }
-
 
 //usuwanie
 void MainWindow::on_pushButtonUsun_clicked()
@@ -141,6 +137,16 @@ void MainWindow::on_pushButtonUsun_clicked()
             //odświezenie zeby nie był pusty rzad, tez mi sie nie podoba ten dynamic_cast
             auto modelToUpdate = dynamic_cast<QSqlTableModel*>(view->model());
             modelToUpdate->select();
+            /* Znalazłem, ogolnie info:
+            Likewise, if you remove rows using removeRows(),
+            the rows will be marked with an exclamation mark (!) until the change is submitted.
+            https://www3.sra.co.jp/qt/relation/doc/qtsql/sql-presenting.html
+
+            Ale to nie pomaga: :(
+//            modelToUpdate->submitAll();
+//            view->model()->submitAll();
+            */
+
         }
     }
 }
@@ -148,13 +154,12 @@ void MainWindow::on_pushButtonUsun_clicked()
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
 void MainWindow::on_textEdit_textChanged()
 {
-
     auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
     int columns = modelToSearch->columnCount();
     //filtrowanie jest po prostu zapytaniem WHERE z SQL
     //modelToSearch->record().fieldName uzyskuje nazwe kolumny taka jaka jest w bazie
     //cos typu "* = coś" nie zadziala, musimy znac nazwy kolumn i ich ilosc zeby przeszukac wszystkie
-    //zapytanie typu " koumna like 'cos%' " zapewnia nam wyszukiwanie zawartosći zaczynajacej sie na 'cos'
+    //zapytanie typu " kolumna like 'cos%' " zapewnia nam wyszukiwanie zawartosći zaczynajacej sie na 'cos'
     QString filter = modelToSearch->record().fieldName(0) + " like '" + ui->textEdit->toPlainText() + "%'";
     for(int i = 1; i< columns ;++i)
     {
@@ -164,4 +169,58 @@ void MainWindow::on_textEdit_textChanged()
     modelToSearch->setFilter(filter);
     qDebug()<<filter;
 
+}
+
+void MainWindow::on_pushButtonDodaj_clicked()
+{
+    // Extract currentTableName as a std::string
+    QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+    std::string strTn = std::string(currentTabName.toStdString().c_str());
+
+    auto CurrentModel = dynamic_cast<QSqlTableModel*>(view->model());
+
+    QSqlRecord newRecord = CurrentModel->record();
+
+//    int columns = CurrentModel->columnCount();
+//    for (int i = 0; i < columns; ++i) {
+//        newRecord.setNull(i);
+//    }
+
+
+    if (strTn == "Smieciarka" ){
+        newRecord.setValue(0, "XXXXXXX");
+        newRecord.setValue(1, 1000);
+        qDebug() << QDate::currentDate();
+        newRecord.setValue(2, QDate::currentDate());
+    } else if(strTn == "Odpad") {
+        // idOdpad is autoincrement so no need to declare it
+        newRecord.remove(newRecord.indexOf("idOdpad"));
+        newRecord.setValue("Procent_zgodnosci", 0);
+//        newRecord.setNull("Smieciarka_Nr_rejestracyjny");
+//        newRecord.setNull("Material_Nazwa");
+        newRecord.setValue("Smieciarka_Nr_rejestracyjny", "ssss");
+        newRecord.setValue("Material_Nazwa", "ssss");
+
+        newRecord.setValue("Kontener_idKontener", 1);
+    } else if(strTn == "Material") {
+        newRecord.setValue(0, "XXXXXXX");
+        newRecord.setValue(1, 90);
+    } else if(strTn == "Kontener") {
+
+    } else if(strTn == "Firma") {
+
+    } else if(strTn == "Sprzedaze") {
+
+    } else {
+        qDebug() << "dodawanie nie pyklo";
+    }
+
+    if(CurrentModel->insertRecord(-1, newRecord)){
+       qDebug()<<"successful insertion";
+       CurrentModel->submitAll();
+//       CurrentModel->select();
+    } else {
+        qDebug() << "insertion error: " << CurrentModel->lastError().text();
+        db.rollback(); // cancels last transition
+    }
 }

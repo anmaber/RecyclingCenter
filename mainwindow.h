@@ -29,6 +29,8 @@ private slots:
 
     void on_textEdit_textChanged();
 
+    void on_pushButtonDodaj_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
