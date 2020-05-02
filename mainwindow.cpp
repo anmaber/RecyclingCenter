@@ -70,10 +70,10 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Smieciarka");
         model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
-
-
         //Relations
-//        model->setRelatio
+        model->setRelation(2, QSqlRelation("Smieciarka","Nr_rejestracyjny","Nr_rejestracyjny"));
+        model->setRelation(3, QSqlRelation("Material","Nazwa","Nazwa"));
+        model->setRelation(4, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else if(strTn == "Material")
     {
@@ -85,7 +85,6 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Id");
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Material");
-
         //Relations
         model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
     }
@@ -94,6 +93,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Nazwa");
         model->setHeaderData(1, Qt::Horizontal, "Cena za kg");
         model->setHeaderData(2, Qt::Horizontal, "Material");
+        //Relations
+        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+
     }
     else if(strTn == "Sprzedaze")
     {
@@ -101,6 +103,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(1, Qt::Horizontal, "Data");
         model->setHeaderData(2, Qt::Horizontal, "Firma");
         model->setHeaderData(3, Qt::Horizontal, "Kontener");
+        //Relations
+        model->setRelation(2, QSqlRelation("Firma","Nazwa","Nazwa"));
+        model->setRelation(3, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else
     {
@@ -131,7 +136,7 @@ void MainWindow::on_pushButtonPokaAll_clicked()
     view->setItemDelegate(new QSqlRelationalDelegate(view));
 }
 
-//usuwanie
+//          Removing
 void MainWindow::on_pushButtonUsun_clicked()
 {
     if(view)
@@ -144,20 +149,23 @@ void MainWindow::on_pushButtonUsun_clicked()
             {
                 view->model()->removeRow(elem.row());
             }
+            // refresh view by clicking Zatwierdz or Pokaz wszystko
+
             //odświezenie zeby nie był pusty rzad, tez mi sie nie podoba ten dynamic_cast
-            auto modelToUpdate = dynamic_cast<QSqlRelationalTableModel*>(view->model());
-            modelToUpdate->select();
-            /* Znalazłem, ogolnie info:
+//            auto modelToUpdate = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+//            modelToUpdate->select();
+
+            /* Znalazłem, ogolnie info z tym (!):
             Likewise, if you remove rows using removeRows(),
             the rows will be marked with an exclamation mark (!) until the change is submitted.
             https://www3.sra.co.jp/qt/relation/doc/qtsql/sql-presenting.html
-
             Ale to nie pomaga: :(
-//            modelToUpdate->submitAll();
-//            view->model()->submitAll();
+            modelToUpdate->submitAll();
             */
 
         }
+    } else {
+        qDebug() << "Zaznacz jakiś widok mordo";
     }
 }
 
@@ -181,56 +189,61 @@ void MainWindow::on_textEdit_textChanged()
 
 }
 
-void MainWindow::on_pushButtonDodaj_clicked()
-{
+//          Inserting/Adding
+void MainWindow::on_pushButtonDodaj_clicked() {
+    // Wersja min. to (analogicznie jak usuwanie)
+    // view->model()->insertRow(view->model()->rowCount());
+    // Jednak uzywajac insertRecord, można ustawiać auto dane.
+
+    auto CurrentModel = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+    QSqlRecord newRecord = CurrentModel->record();
+    // ManualSubmit required coz of lack of default values, i.e.:
+    // "Field 'Material_Nazwa' doesn't have a default value QMYSQL3: Unable to execute statement"
+    CurrentModel->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+
     // Extract currentTableName as a std::string
     QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     std::string strTn = std::string(currentTabName.toStdString().c_str());
 
-    auto CurrentModel = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+    // Regarding Autoincrement ID:
+    // There shouldn't be need to declare it, i.e:
+    // newRecord.remove(newRecord.indexOf("idKontener"));
+    // but as it's not working, I'm using a workaround:
+    // newRecord.setValue(0, view->model()->rowCount()+1);
 
-    QSqlRecord newRecord = CurrentModel->record();
-
-//    int columns = CurrentModel->columnCount();
-//    for (int i = 0; i < columns; ++i) {
-//        newRecord.setNull(i);
-//    }
-
-
+    // Different auto data, depending on the Table
     if (strTn == "Smieciarka" ){
-        newRecord.setValue(0, "XXXXXXX");
-        newRecord.setValue(1, 1000);
-        qDebug() << QDate::currentDate();
         newRecord.setValue(2, QDate::currentDate());
     } else if(strTn == "Odpad") {
-        // idOdpad is autoincrement so no need to declare it
-        newRecord.remove(newRecord.indexOf("idOdpad"));
-        newRecord.setValue("Procent_zgodnosci", 0);
-//        newRecord.setNull("Smieciarka_Nr_rejestracyjny");
-//        newRecord.setNull("Material_Nazwa");
-        newRecord.setValue("Smieciarka_Nr_rejestracyjny", "ssss");
-        newRecord.setValue("Material_Nazwa", "ssss");
-
-        newRecord.setValue("Kontener_idKontener", 1);
-    } else if(strTn == "Material") {
-        newRecord.setValue(0, "XXXXXXX");
-        newRecord.setValue(1, 90);
+        newRecord.setValue(0, view->model()->rowCount()+1);
     } else if(strTn == "Kontener") {
-
-    } else if(strTn == "Firma") {
-
+        newRecord.setValue(0, view->model()->rowCount()+1);
     } else if(strTn == "Sprzedaze") {
-
-    } else {
-        qDebug() << "dodawanie nie pyklo";
+        newRecord.setValue(0, view->model()->rowCount()+1);
+        newRecord.setValue(1, QDate::currentDate());
     }
 
+    // Append newRecord to CurrentModel
     if(CurrentModel->insertRecord(-1, newRecord)){
-       qDebug()<<"successful insertion";
-       CurrentModel->submitAll();
-//       CurrentModel->select();
+       CurrentModel->submitAll(); // Submit new Row, and maybe some auto data
     } else {
-        qDebug() << "insertion error: " << CurrentModel->lastError().text();
         db.rollback(); // cancels last transition
+        qDebug() << " Insertion error: " << CurrentModel->lastError().text();
+    }
+    // Doesn't work here, have to be outside function(I've kept it as a back up):
+    // CurrentModel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
+}
+
+// Zatwierdzanie Dodawania lub odswiezanie widoku po usuwaniu(#FakeRemove)
+void MainWindow::on_pushButtonZatwierdz_clicked()
+{
+    if(view){
+        auto CurrentModel = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+        CurrentModel->submitAll(); // Submit user input changes
+        CurrentModel->select(); // A bow to removeRow()
+        // Have to change Strategy after adding record, dunno why :(
+        CurrentModel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
+    } else {
+        qDebug() << "No view, no fun";
     }
 }

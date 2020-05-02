@@ -66,16 +66,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonEdytuj">
+      <widget class="QPushButton" name="pushButtonUsun">
        <property name="text">
-        <string>Edutuj</string>
+        <string>Usuń</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonUsun">
+      <widget class="QPushButton" name="pushButtonZatwierdz">
        <property name="text">
-        <string>Usuń</string>
+        <string>Zatwierdź zmiany</string>
        </property>
       </widget>
      </item>
