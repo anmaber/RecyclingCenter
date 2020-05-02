@@ -29,12 +29,16 @@ private slots:
 
     void on_textEdit_textChanged();
 
+    void on_pushButtonDodaj_clicked();
+
+    void on_pushButtonZatwierdz_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     void initDB(bool ItsAnia);
     QTableView * view;
-    QSqlTableModel *initModel(const char* TableName); // reads Table from server
+    QSqlRelationalTableModel *initModel(const char* TableName); // reads Table from server
 
 };
 
