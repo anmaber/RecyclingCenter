@@ -53,8 +53,6 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
     model->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
 //    model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
 
-    //Relations
-
     model->select(); // Reads data from Table
     std::string strTn = std::string(TableName);
 
@@ -63,6 +61,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Rejestracja");
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Data-odbioru");
+
     }
     else if(strTn == "Odpad")
     {
@@ -71,6 +70,10 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Smieciarka");
         model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
+
+
+        //Relations
+//        model->setRelatio
     }
     else if(strTn == "Material")
     {
@@ -82,6 +85,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Id");
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Material");
+
+        //Relations
+        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
     }
     else if(strTn == "Firma")
     {
@@ -122,6 +128,7 @@ void MainWindow::on_pushButtonPokaAll_clicked()
 {
     QString currentTabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     view->setModel(initModel(currentTabName.toStdString().c_str()));
+    view->setItemDelegate(new QSqlRelationalDelegate(view));
 }
 
 //usuwanie
