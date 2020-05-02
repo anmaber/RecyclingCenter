@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    // TEST BRANCHA
+    // Halo halo, tescik
 
     return a.exec();
 }
