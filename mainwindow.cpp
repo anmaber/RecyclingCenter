@@ -122,7 +122,6 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     view=dynamic_cast<QTableView*>(ui->tabWidget->widget(index));
-    // PRZY EDIT FK DOBRZE BY BYŁO DAĆ COMBO BOX I ERROR HANDLING
     view->setEditTriggers(QTableView::DoubleClicked);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -210,6 +209,7 @@ void MainWindow::on_pushButtonDodaj_clicked() {
     // newRecord.remove(newRecord.indexOf("idKontener"));
     // but as it's not working, I'm using a workaround:
     // newRecord.setValue(0, view->model()->rowCount()+1);
+    // ... but there is a risk of recurring ID -> maybe need to TRIGGER correction
 
     // Different auto data, depending on the Table
     if (strTn == "Smieciarka" ){
