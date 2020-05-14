@@ -33,6 +33,8 @@ private slots:
 
     void on_pushButtonZatwierdz_clicked();
 
+    void LoginToDB(QString);
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;

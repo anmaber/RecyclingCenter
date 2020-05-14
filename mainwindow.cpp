@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "loginwindow.hh"
 #include <string>
 #include <QDate>
 
@@ -9,13 +10,25 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //  Initialize Database
-    if (QMessageBox::Yes == QMessageBox(QMessageBox::Question,
-                                        "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
-    {
-        this->initDB(true); // Ania's password
-    } else {
-        this->initDB(false); // Filip's password
-    }
+    LoginWindow l;
+
+    connect(&l, SIGNAL(LoginData(QString)), this, SLOT(LoginToDB(QString)));
+
+    l.exec();
+
+//    if (l.exec() == QDialog::Accepted) {
+//        this->initDB(true); // Ania's password
+//    } else {
+//        this->initDB(false); // Filip's password
+//    }
+
+    //    if (QMessageBox::Yes == QMessageBox(QMessageBox::Question,
+//                                        "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
+//    {
+//        this->initDB(true); // Ania's password
+//    } else {
+//        this->initDB(false); // Filip's password
+//    }
 
     ui->tabWidget->addTab(new QTableView(),"Smieciarka");
     ui->tabWidget->addTab(new QTableView(),"Odpad");
@@ -24,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->addTab(new QTableView(),"Firma");
     ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -35,6 +47,7 @@ void MainWindow::initDB(bool ItsAnia) {
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setUserName("root");
+
     if(ItsAnia){
         db.setPassword("bernas1998!");
     } else {
@@ -169,6 +182,9 @@ void MainWindow::on_pushButtonUsun_clicked()
 }
 
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
+
+// Odpad i Firma nie dziala
+
 void MainWindow::on_textEdit_textChanged()
 {
     auto modelToSearch = dynamic_cast<QSqlRelationalTableModel*>(view->model());
@@ -246,4 +262,30 @@ void MainWindow::on_pushButtonZatwierdz_clicked()
     } else {
         qDebug() << "No view, no fun";
     }
+}
+
+void MainWindow::LoginToDB(QString Koko)
+{
+    // logowanie do bazy
+    // User Name
+    const int SpacebarNumber = Koko.count(' ');
+    if(SpacebarNumber == 1){
+        auto lista = Koko.split(' ');
+        QString UserName = lista[0];
+        QString UserPassword = lista[1];
+    } else {
+
+    }
+
+
+//    QString temp = (QString)t[0];
+//    int i = 1;
+
+//    while (t[i] != " ");
+//    {
+//        temp.append(t[i]);
+//        i += 1;
+//    }
+
+    qDebug() << Koko;
 }
