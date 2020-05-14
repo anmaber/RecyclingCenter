@@ -1,34 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "loginwindow.hh"
 #include <string>
 #include <QDate>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QSqlDatabase ParentDB, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //  Initialize Database
-    LoginWindow l;
 
-    connect(&l, SIGNAL(LoginData(QString)), this, SLOT(LoginToDB(QString)));
-
-    l.exec();
-
-//    if (l.exec() == QDialog::Accepted) {
-//        this->initDB(true); // Ania's password
-//    } else {
-//        this->initDB(false); // Filip's password
-//    }
-
-    //    if (QMessageBox::Yes == QMessageBox(QMessageBox::Question,
-//                                        "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
-//    {
-//        this->initDB(true); // Ania's password
-//    } else {
-//        this->initDB(false); // Filip's password
-//    }
+    // Init Database from parent's connection
+    db = ParentDB;
 
     ui->tabWidget->addTab(new QTableView(),"Smieciarka");
     ui->tabWidget->addTab(new QTableView(),"Odpad");
@@ -37,26 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->addTab(new QTableView(),"Firma");
     ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-/* Connects with DB server and prints error text on qDebug if anything's wrong */
-void MainWindow::initDB(bool ItsAnia) {
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setUserName("root");
-
-    if(ItsAnia){
-        db.setPassword("bernas1998!");
-    } else {
-        db.setPassword("Komputer1@");
-    }
-    db.setDatabaseName("mydb");
-    if(!db.open()){
-        qDebug() << "Cos nie pyklo :( " << db.lastError().text();
-    }
 }
 
 QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
@@ -262,30 +228,4 @@ void MainWindow::on_pushButtonZatwierdz_clicked()
     } else {
         qDebug() << "No view, no fun";
     }
-}
-
-void MainWindow::LoginToDB(QString Koko)
-{
-    // logowanie do bazy
-    // User Name
-    const int SpacebarNumber = Koko.count(' ');
-    if(SpacebarNumber == 1){
-        auto lista = Koko.split(' ');
-        QString UserName = lista[0];
-        QString UserPassword = lista[1];
-    } else {
-
-    }
-
-
-//    QString temp = (QString)t[0];
-//    int i = 1;
-
-//    while (t[i] != " ");
-//    {
-//        temp.append(t[i]);
-//        i += 1;
-//    }
-
-    qDebug() << Koko;
 }

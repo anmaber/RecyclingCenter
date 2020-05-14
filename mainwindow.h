@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QSqlDatabase ParentDB, QWidget *parent = 0);
     ~MainWindow();
 private slots:
     void on_tabWidget_currentChanged(int index);
@@ -33,12 +33,9 @@ private slots:
 
     void on_pushButtonZatwierdz_clicked();
 
-    void LoginToDB(QString);
-
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
-    void initDB(bool ItsAnia);
     QTableView * view;
     QSqlRelationalTableModel *initModel(const char* TableName); // reads Table from server
 

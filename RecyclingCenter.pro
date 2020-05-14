@@ -24,14 +24,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        loginwindow.cpp \
+        loginmw.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
-        loginwindow.hh \
+        loginmw.hh \
         mainwindow.h
 
 FORMS += \
-        loginwindow.ui \
+        loginmw.ui \
         mainwindow.ui
