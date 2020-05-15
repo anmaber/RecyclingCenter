@@ -23,6 +23,8 @@ public:
     explicit LoginMW(QWidget *parent = nullptr);
     ~LoginMW();
 
+    void CleanLineEdit();
+
 private slots:
     void on_pushButton_Login_clicked();
 

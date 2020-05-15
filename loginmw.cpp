@@ -18,16 +18,24 @@ LoginMW::~LoginMW()
     delete ui;
 }
 
+void LoginMW::CleanLineEdit()
+{
+//    ui->lineEdit_Nazwa->setText("");
+    ui->lineEdit_Nazwa->clear();
+    ui->lineEdit_Haslo->clear();
+}
+
 void LoginMW::on_pushButton_Login_clicked()
 {
     // Read Username and Password from LineEdits
-    db.setUserName(ui->lineEdit_Nazwa->text());
+    QString UserName = ui->lineEdit_Nazwa->text();
+    db.setUserName(UserName);
     db.setPassword(ui->lineEdit_Haslo->text());
 
     if(db.open()){
         ui->label_Status->setText("Poprawnie zalogowano");
         this->hide();
-        mw = new MainWindow(db, this); // Init MainWindow with correct DB connection
+        mw = new MainWindow(UserName, db, this); // Init MainWindow with correct DB connection
         mw->show();
     } else {
         ui->label_Status->setText("Zla nazwa lub haslo");
@@ -39,12 +47,13 @@ void LoginMW::on_pushButton_Login_clicked()
 // Podczas pracy nad appką:
 void LoginMW::on_buttonBox_Admin_accepted()
 {
+    QString Root = "root";
     db.setUserName("root");
     db.setPassword("bernas1998!");
     if(db.open()){
         ui->label_Status->setText("Poprawnie zalogowano");
         this->hide();
-        mw = new MainWindow(db, this); // Init MainWindow with correct DB connection
+        mw = new MainWindow(Root, db, this); // Init MainWindow with correct DB connection
         mw->show();
     } else {
         ui->label_Status->setText("Zla nazwa lub haslo");
@@ -56,12 +65,13 @@ void LoginMW::on_buttonBox_Admin_accepted()
 // Podczas pracy nad appką:
 void LoginMW::on_buttonBox_Admin_rejected()
 {
+    QString Root = "root";
     db.setUserName("root");
     db.setPassword("Komputer1@");
     if(db.open()){
         ui->label_Status->setText("Poprawnie zalogowano");
         this->hide();
-        mw = new MainWindow(db, this); // Init MainWindow with correct DB connection
+        mw = new MainWindow(Root, db, this); // Init MainWindow with correct DB connection
         mw->show();
     } else {
         ui->label_Status->setText("Zla nazwa lub haslo");

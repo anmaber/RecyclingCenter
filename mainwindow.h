@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QSqlDatabase ParentDB, QWidget *parent = 0);
+    explicit MainWindow(QString UserName, QSqlDatabase ParentDB, QWidget *parent = 0);
     ~MainWindow();
 private slots:
     void on_tabWidget_currentChanged(int index);
@@ -32,6 +32,8 @@ private slots:
     void on_pushButtonDodaj_clicked();
 
     void on_pushButtonZatwierdz_clicked();
+
+    void on_pushButtonWyloguj_clicked();
 
 private:
     Ui::MainWindow *ui;
