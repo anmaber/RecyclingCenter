@@ -3,47 +3,44 @@
 #include <string>
 #include <QDate>
 
-MainWindow::MainWindow(QWidget *parent) :
+#include "loginmw.hh"
+
+MainWindow::MainWindow(QString UserName, QSqlDatabase ParentDB, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //  Initialize Database
-    if (QMessageBox::Yes == QMessageBox(QMessageBox::Question,
-                                        "Mini kolokwium", "Czy to Ania?", QMessageBox::Yes|QMessageBox::No).exec())
-    {
-        this->initDB(true); // Ania's password
+
+    // Init Database from parent's connection
+    db = ParentDB;
+
+    if(UserName == "root"){
+        ui->tabWidget->addTab(new QTableView(),"Smieciarka");
+        ui->tabWidget->addTab(new QTableView(),"Odpad");
+        ui->tabWidget->addTab(new QTableView(),"Material");
+        ui->tabWidget->addTab(new QTableView(),"Kontener");
+        ui->tabWidget->addTab(new QTableView(),"Firma");
+        ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
+    } else if(UserName == "inz") {
+        ui->tabWidget->addTab(new QTableView(),"Odpad");
+        ui->tabWidget->addTab(new QTableView(),"Material");
+    } else if(UserName == "handel") {
+        ui->tabWidget->addTab(new QTableView(),"Kontener");
+        ui->tabWidget->addTab(new QTableView(),"Firma");
+        ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
+    } else if(UserName == "oper"){
+        ui->tabWidget->addTab(new QTableView(),"Smieciarka");
+        ui->tabWidget->addTab(new QTableView(),"Odpad");
+        ui->tabWidget->addTab(new QTableView(),"Kontener");
     } else {
-        this->initDB(false); // Filip's password
+        qDebug("Niepoprawna nazwa uzytkownika");
     }
 
-    ui->tabWidget->addTab(new QTableView(),"Smieciarka");
-    ui->tabWidget->addTab(new QTableView(),"Odpad");
-    ui->tabWidget->addTab(new QTableView(),"Material");
-    ui->tabWidget->addTab(new QTableView(),"Kontener");
-    ui->tabWidget->addTab(new QTableView(),"Firma");
-    ui->tabWidget->addTab(new QTableView(),"Sprzedaze");
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-/* Connects with DB server and prints error text on qDebug if anything's wrong */
-void MainWindow::initDB(bool ItsAnia) {
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setUserName("root");
-    if(ItsAnia){
-        db.setPassword("bernas1998!");
-    } else {
-        db.setPassword("Komputer1@");
-    }
-    db.setDatabaseName("mydb");
-    if(!db.open()){
-        qDebug() << "Cos nie pyklo :( " << db.lastError().text();
-    }
 }
 
 QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
@@ -73,6 +70,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         //Relations
         model->setRelation(2, QSqlRelation("Smieciarka","Nr_Rejestracyjny","Nr_Rejestracyjny"));
         model->setRelation(3, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
+//        model->setRelation(2, QSqlRelation("Smieciarka","Nr_rejestracyjny","Nr_rejestracyjny"));
+//        model->setRelation(3, QSqlRelation("Material","Nazwa","Nazwa"));
+
         model->setRelation(4, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else if(strTn == "Material")
@@ -86,7 +86,10 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
+
         model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
+//        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+
     }
     else if(strTn == "Firma")
     {
@@ -95,6 +98,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
         model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
+
+//        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+
 
     }
     else if(strTn == "Sprzedaze")
@@ -105,6 +111,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(3, Qt::Horizontal, "Kontener");
         //Relations
         model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmy","Nazwa_Firmy"));
+
+//        model->setRelation(2, QSqlRelation("Firma","Nazwa","Nazwa"));
+
         model->setRelation(3, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else
@@ -169,6 +178,9 @@ void MainWindow::on_pushButtonUsun_clicked()
 }
 
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
+
+// Odpad i Firma nie dziala
+
 void MainWindow::on_textEdit_textChanged()
 {
     auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
@@ -246,4 +258,17 @@ void MainWindow::on_pushButtonZatwierdz_clicked()
     } else {
         qDebug() << "No view, no fun";
     }
+}
+
+void MainWindow::on_pushButtonWyloguj_clicked()
+{
+//    parent->show();
+//    (QWidget*)parent->show();
+
+//    auto LoginWindow = qobject_cast<QWidget*>(this->parent());
+    auto LoginWindow = qobject_cast<LoginMW*>(this->parent());
+    LoginWindow->CleanLineEdit();
+    LoginWindow->show();
+
+    this->close();
 }

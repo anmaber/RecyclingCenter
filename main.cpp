@@ -1,15 +1,15 @@
 #include "mainwindow.h"
-//#include "database.hh"
+#include "loginmw.hh"
 #include <QApplication>
 #include <QMessageBox>
+#include <QObject>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    LoginMW lmw;
 
-    // Halo halo, tescik
+    lmw.show();
 
     return a.exec();
 }
