@@ -68,7 +68,6 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
         //Relations
-
         model->setRelation(2, QSqlRelation("Smieciarka","Nr_Rejestracyjny","Nr_Rejestracyjny"));
         model->setRelation(3, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
 //        model->setRelation(2, QSqlRelation("Smieciarka","Nr_rejestracyjny","Nr_rejestracyjny"));
@@ -99,7 +98,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
         model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
+
 //        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+
 
     }
     else if(strTn == "Sprzedaze")
@@ -110,7 +111,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(3, Qt::Horizontal, "Kontener");
         //Relations
         model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmy","Nazwa_Firmy"));
+
 //        model->setRelation(2, QSqlRelation("Firma","Nazwa","Nazwa"));
+
         model->setRelation(3, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else
@@ -180,7 +183,7 @@ void MainWindow::on_pushButtonUsun_clicked()
 
 void MainWindow::on_textEdit_textChanged()
 {
-    auto modelToSearch = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+    auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
     int columns = modelToSearch->columnCount();
     //filtrowanie jest po prostu zapytaniem WHERE z SQL
     //modelToSearch->record().fieldName uzyskuje nazwe kolumny taka jaka jest w bazie
