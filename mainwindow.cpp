@@ -71,8 +71,8 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
         //Relations
-        model->setRelation(2, QSqlRelation("Smieciarka","Nr_rejestracyjny","Nr_rejestracyjny"));
-        model->setRelation(3, QSqlRelation("Material","Nazwa","Nazwa"));
+        model->setRelation(2, QSqlRelation("Smieciarka","Nr_Rejestracyjny","Nr_Rejestracyjny"));
+        model->setRelation(3, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
         model->setRelation(4, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else if(strTn == "Material")
@@ -86,7 +86,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(1, Qt::Horizontal, "Waga");
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
-        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+        model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
     }
     else if(strTn == "Firma")
     {
@@ -94,7 +94,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(1, Qt::Horizontal, "Cena za kg");
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
-        model->setRelation(2, QSqlRelation("Material","Nazwa","Nazwa"));
+        model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
 
     }
     else if(strTn == "Sprzedaze")
@@ -104,7 +104,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Firma");
         model->setHeaderData(3, Qt::Horizontal, "Kontener");
         //Relations
-        model->setRelation(2, QSqlRelation("Firma","Nazwa","Nazwa"));
+        model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmy","Nazwa_Firmy"));
         model->setRelation(3, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else
@@ -171,7 +171,7 @@ void MainWindow::on_pushButtonUsun_clicked()
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
 void MainWindow::on_textEdit_textChanged()
 {
-    auto modelToSearch = dynamic_cast<QSqlRelationalTableModel*>(view->model());
+    auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
     int columns = modelToSearch->columnCount();
     //filtrowanie jest po prostu zapytaniem WHERE z SQL
     //modelToSearch->record().fieldName uzyskuje nazwe kolumny taka jaka jest w bazie
