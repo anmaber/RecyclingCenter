@@ -28,10 +28,6 @@ public:
 private slots:
     void on_pushButton_Login_clicked();
 
-    void on_buttonBox_Admin_accepted();
-
-    void on_buttonBox_Admin_rejected();
-
 private:
     Ui::LoginMW *ui;
     QSqlDatabase db;

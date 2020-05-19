@@ -20,9 +20,9 @@ LoginMW::~LoginMW()
 
 void LoginMW::CleanLineEdit()
 {
-//    ui->lineEdit_Nazwa->setText("");
     ui->lineEdit_Nazwa->clear();
     ui->lineEdit_Haslo->clear();
+    ui->label_Status->setText("Poprawnie wylogowano");
 }
 
 void LoginMW::on_pushButton_Login_clicked()
@@ -36,42 +36,6 @@ void LoginMW::on_pushButton_Login_clicked()
         ui->label_Status->setText("Poprawnie zalogowano");
         this->hide();
         mw = new MainWindow(UserName, db, this); // Init MainWindow with correct DB connection
-        mw->show();
-    } else {
-        ui->label_Status->setText("Zla nazwa lub haslo");
-        qDebug("Cos nie pyklo:");
-        qDebug() << db.lastError().text();
-    }
-}
-
-// Podczas pracy nad appką:
-void LoginMW::on_buttonBox_Admin_accepted()
-{
-    QString Root = "root";
-    db.setUserName("root");
-    db.setPassword("bernas1998!");
-    if(db.open()){
-        ui->label_Status->setText("Poprawnie zalogowano");
-        this->hide();
-        mw = new MainWindow(Root, db, this); // Init MainWindow with correct DB connection
-        mw->show();
-    } else {
-        ui->label_Status->setText("Zla nazwa lub haslo");
-        qDebug("Cos nie pyklo:");
-        qDebug() << db.lastError().text();
-    }
-}
-
-// Podczas pracy nad appką:
-void LoginMW::on_buttonBox_Admin_rejected()
-{
-    QString Root = "root";
-    db.setUserName("root");
-    db.setPassword("Komputer1@");
-    if(db.open()){
-        ui->label_Status->setText("Poprawnie zalogowano");
-        this->hide();
-        mw = new MainWindow(Root, db, this); // Init MainWindow with correct DB connection
         mw->show();
     } else {
         ui->label_Status->setText("Zla nazwa lub haslo");

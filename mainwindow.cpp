@@ -56,7 +56,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
     if (strTn =="Smieciarka" )
     {
         model->setHeaderData(0, Qt::Horizontal, "Rejestracja");
-        model->setHeaderData(1, Qt::Horizontal, "Waga");
+        model->setHeaderData(1, Qt::Horizontal, "Waga [kg]");
         model->setHeaderData(2, Qt::Horizontal, "Data-odbioru");
 
     }
@@ -83,7 +83,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
     else if(strTn == "Kontener")
     {
         model->setHeaderData(0, Qt::Horizontal, "Id");
-        model->setHeaderData(1, Qt::Horizontal, "Waga");
+        model->setHeaderData(1, Qt::Horizontal, "Waga [kg]");
         model->setHeaderData(2, Qt::Horizontal, "Material");
         //Relations
 
@@ -178,8 +178,6 @@ void MainWindow::on_pushButtonUsun_clicked()
 
 //szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
 
-// Odpad i Firma nie dziala
-
 void MainWindow::on_textEdit_textChanged()
 {
     auto modelToSearch = dynamic_cast<QSqlTableModel*>(view->model());
@@ -195,16 +193,10 @@ void MainWindow::on_textEdit_textChanged()
         filter += modelToSearch->record().fieldName(i) + " like '" + ui->textEdit->toPlainText() + "%'";
     }
     modelToSearch->setFilter(filter);
-//    qDebug()<<filter;
-
 }
 
 //          Inserting/Adding
 void MainWindow::on_pushButtonDodaj_clicked() {
-    // Wersja min. to (analogicznie jak usuwanie)
-    // view->model()->insertRow(view->model()->rowCount());
-    // Jednak uzywajac insertRecord, można ustawiać auto dane.
-
     auto CurrentModel = dynamic_cast<QSqlRelationalTableModel*>(view->model());
     QSqlRecord newRecord = CurrentModel->record();
     // ManualSubmit required coz of lack of default values, i.e.:
@@ -261,10 +253,6 @@ void MainWindow::on_pushButtonZatwierdz_clicked()
 
 void MainWindow::on_pushButtonWyloguj_clicked()
 {
-//    parent->show();
-//    (QWidget*)parent->show();
-
-//    auto LoginWindow = qobject_cast<QWidget*>(this->parent());
     auto LoginWindow = qobject_cast<LoginMW*>(this->parent());
     LoginWindow->CleanLineEdit();
     LoginWindow->show();
