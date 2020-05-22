@@ -48,7 +48,6 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
     model->setTable(TableName);
     //All changes to the model will be applied immediately to the database:
     model->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
-//    model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
 
     model->select(); // Reads data from Table
     std::string strTn = std::string(TableName);
@@ -67,12 +66,9 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(2, Qt::Horizontal, "Smieciarka");
         model->setHeaderData(3, Qt::Horizontal, "Material");
         model->setHeaderData(4, Qt::Horizontal, "Kontener");
-        //Relations
+
         model->setRelation(2, QSqlRelation("Smieciarka","Nr_Rejestracyjny","Nr_Rejestracyjny"));
-
-//        model->setRelation(3, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
         model->setRelation(3, QSqlRelation("Material","Nazwa_Materialu","Nazwa_Materialu"));
-
         model->setRelation(4, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else if(strTn == "Material")
@@ -85,9 +81,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Id");
         model->setHeaderData(1, Qt::Horizontal, "Waga [kg]");
         model->setHeaderData(2, Qt::Horizontal, "Material");
-        //Relations
 
-//        model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
         model->setRelation(2, QSqlRelation("Material","Nazwa_Materialu","Nazwa_Materialu"));
 
     }
@@ -96,9 +90,7 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(0, Qt::Horizontal, "Nazwa");
         model->setHeaderData(1, Qt::Horizontal, "Cena za kg");
         model->setHeaderData(2, Qt::Horizontal, "Material");
-        //Relations
 
-//        model->setRelation(2, QSqlRelation("Material","Nazwa_Mat","Nazwa_Mat"));
         model->setRelation(2, QSqlRelation("Material","Nazwa_Materialu","Nazwa_Materialu"));
 
 
@@ -109,10 +101,8 @@ QSqlRelationalTableModel *MainWindow::initModel(const char* TableName){
         model->setHeaderData(1, Qt::Horizontal, "Data");
         model->setHeaderData(2, Qt::Horizontal, "Firma");
         model->setHeaderData(3, Qt::Horizontal, "Kontener");
-        //Relations
-//        model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmy","Nazwa_Firmy"));
-        model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmowa","Nazwa_Firmowa"));
 
+        model->setRelation(2, QSqlRelation("Firma","Nazwa_Firmowa","Nazwa_Firmowa"));
         model->setRelation(3, QSqlRelation("Kontener","idKontener","idKontener"));
     }
     else
@@ -157,26 +147,12 @@ void MainWindow::on_pushButtonUsun_clicked()
                 view->model()->removeRow(elem.row());
             }
             // refresh view by clicking Zatwierdz or Pokaz wszystko
-
-            //odświezenie zeby nie był pusty rzad, tez mi sie nie podoba ten dynamic_cast
-//            auto modelToUpdate = dynamic_cast<QSqlRelationalTableModel*>(view->model());
-//            modelToUpdate->select();
-
-            /* Znalazłem, ogolnie info z tym (!):
-            Likewise, if you remove rows using removeRows(),
-            the rows will be marked with an exclamation mark (!) until the change is submitted.
-            https://www3.sra.co.jp/qt/relation/doc/qtsql/sql-presenting.html
-            Ale to nie pomaga: :(
-            modelToUpdate->submitAll();
-            */
-
         }
     } else {
         qDebug() << "Zaznacz jakiś widok";
     }
 }
 
-//szukanie, rozwala sie jak chcesz wyszukać gdy nic nie jest pokazane, to sie samo ogarnie jak wywali sie pokaz wszystkie
 
 void MainWindow::on_textEdit_textChanged()
 {
@@ -237,7 +213,7 @@ void MainWindow::on_pushButtonDodaj_clicked() {
     // CurrentModel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
 }
 
-// Zatwierdzanie Dodawania lub odswiezanie widoku po usuwaniu(#FakeRemove)
+// Zatwierdzanie Dodawania lub odswiezanie widoku po usuwaniu
 void MainWindow::on_pushButtonZatwierdz_clicked()
 {
     if(view){
